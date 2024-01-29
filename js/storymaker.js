@@ -38,15 +38,14 @@ let noun2Count = 0;
 let settingCount = 0;
 
 /* Functions -------------------------------------------------- */
-window.onload = function(){
-    // Display student id for all buttons
-    for (let i = 0; i < buttons.length; i++){
-        buttons[i].addEventListener('click', function(){
-            stdId.textContent = "200554124";
-        });
-    }
+// Display student id for all buttons
+for (let i = 0; i < buttons.length; i++){
+    buttons[i].addEventListener('click', function(){
+        stdId.textContent = "200554124";
+    });
 }
 
+// Make the opacity 0 for all p tags when page loads
 stdId.style.opacity = "0";
 noun1Out.style.opacity = "0";
 verbOut.style.opacity = "0";
@@ -55,6 +54,7 @@ noun2Out.style.opacity = "0";
 settingOut.style.opacity = "0";
 storyOut.style.opacity = "0";
 
+// Make the opacity 1 for all p tags when textcontent is not 'Dummy'
 if (stdId.textContent !== "Dummy"){
     // Make the opacity 1
     stdId.style.opacity = "1";
@@ -83,7 +83,7 @@ if (settingOut.textContent !== "Dummy"){
 // Variables for live array elements
 let noun1Live, verbLive, adjectiveLive, noun2Live, settingLive;
 
-function noun1_on_click() {
+function noun1_on_click(){
     // Variable to get array element and displaying it
     noun1Out.textContent = noun1Array[noun1Count];
     noun1Live = noun1Array[noun1Count];
@@ -94,7 +94,7 @@ function noun1_on_click() {
     }
 }
 
-function verb_on_click() {
+function verb_on_click(){
     // Variable to get array element and displaying it
     verbOut.textContent = verbArray[verbCount];
     verbLive = verbArray[verbCount];
@@ -105,7 +105,7 @@ function verb_on_click() {
     }
 }
 
-function adjective_on_click() {
+function adjective_on_click(){
     // Variable to get array element and displaying it
     adjectiveOut.textContent = adjectiveArray[adjectiveCount];
     adjectiveLive = adjectiveArray[adjectiveCount];
@@ -116,7 +116,7 @@ function adjective_on_click() {
     }
 }
 
-function noun2_on_click() {
+function noun2_on_click(){
     // Variable to get array element and displaying it
     noun2Out.textContent = noun2Array[noun2Count];
     noun2Live = noun2Array[noun2Count];
@@ -127,7 +127,7 @@ function noun2_on_click() {
     }
 }
 
-function setting_on_click() {
+function setting_on_click(){
     // Variable to get array element and displaying it
     settingOut.textContent = settingArray[settingCount];
     settingLive = settingArray[settingCount];
@@ -147,18 +147,21 @@ function playback_on_click(){
 
 let nounFunctions = [noun1_on_click, noun2_on_click];
 let otherFunctions = [verb_on_click, adjective_on_click, setting_on_click];
+
 // Grabbing random element from arrays, concatenate and display
-function random_on_click() {
+function random_on_click(){
     // Define the number of times to run the functions
-    let numTimes = 5;
+    let nounTimes = 6;
+    let otherTimes = 5;
 
     // Run the functions numTimes times
-    for (let i = 0; i < numTimes; i++) {
+    for (let i = 0; i < nounTimes; i++){
         // Generate a random index for nounFunctions
         let index = Math.floor(Math.random() * nounFunctions.length);
         // Call the function at the random index
         nounFunctions[index]();
-
+    }
+    for (let i = 0; i < otherTimes; i++){
         // Generate a random index for otherFunctions
         let index2 = Math.floor(Math.random() * otherFunctions.length);
         // Call the function at the random index
@@ -200,35 +203,27 @@ showStory.addEventListener('click', playback_on_click);
 randomStory.addEventListener('click', random_on_click);
 reset.addEventListener('click', reset_on_click);
 
-stdId.style.opacity = "0";
-noun1Out.style.opacity = "0";
-verbOut.style.opacity = "0";
-adjectiveOut.style.opacity = "0";
-noun2Out.style.opacity = "0";
-settingOut.style.opacity = "0";
-storyOut.style.opacity = "0";
+// Select the p tags
+let pTags = document.getElementsByTagName('p');
 
-if (stdId.textContent !== "Dummy"){
-    // Make the opacity 1
-    stdId.style.opacity = "1";
-}
-if (noun1Out.textContent !== "Dummy"){
-    // Make the opacity 1
-    noun1Out.style.opacity = "1";
-}
-if (verbOut.textContent !== "Dummy"){
-    // Make the opacity 1
-    verbOut.style.opacity = "1";
-}
-if (adjectiveOut.textContent !== "Dummy"){
-    // Make the opacity 1
-    adjectiveOut.style.opacity = "1";
-}
-if (noun2Out.textContent !== "Dummy"){
-    // Make the opacity 1
-    noun2Out.style.opacity = "1";
-}
-if (settingOut.textContent !== "Dummy"){
-    // Make the opacity 1
-    settingOut.style.opacity = "1";
+// Create a MutationObserver instance
+let observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.type == 'childList') {
+            let target = mutation.target;
+            if (target.textContent === "Dummy") {
+                target.style.opacity = "0";
+            } else {
+                target.style.opacity = "1";
+            }
+        }
+    });
+});
+
+// Options for the observer (which mutations to observe)
+let config = { childList: true };
+
+// Start observing the p tags for configured mutations
+for (let i = 0; i < pTags.length; i++){
+    observer.observe(pTags[i], config);
 }
